@@ -1,0 +1,972 @@
+
+<body class="background">
+
+<body id="middleBody">
+    <body id="currencyBody">
+        <div id="middleCurrencyTopDivider"></div>
+        <div id="middleCurrencyBottomDivider"></div>
+        <div class="currency">{{vaartus | number}}</div>
+    </body>
+    <div id="manualPowerUpgradeBackground">
+        <div id="manualPowerBar" [style.height.%]="manualPowerBar()"></div>
+    </div>
+    <div id="middleRightDivider"></div>
+
+    <div *ngFor="let ball of balls">
+        <img 
+        class="ball"
+        [src]="ball.src"
+        [style.left.vh]="ball.left"
+        [style.top.vh]="ball.top"
+        [style.width.vh]="ball.width"
+        [style.height.vh]="ball.height"
+        [style.transform]="ball.transform"
+        (click)="burstBall(ball)"
+        >
+    </div>
+    <button [hidden]="true" id="saveOrLoadBackground" (click)="saveOrLoadWindow = true">save <br> load</button>
+    <button id="saveLocal" (click)="saveToLocal()">Save</button>
+    <button id="loadLocal" (click)="loadFromLocal()">Load</button>
+    <div id="ballChannelVertical"></div>
+    <div id="ballChannelHorizontal"></div>
+
+    <button class="getCurrency" (click)="vajutatiNuppu()" ></button>
+</body>
+
+<body  class="topLeftBody">
+    <div [hidden]="autoClickerSetting.amountOf < 1">
+    <div class="topLeftDivider"></div>
+
+    <button [disabled]="cryptoMiner.pricePer > vaartus" (click)="buyAutoInComeAmount(cryptoMiner)" class="additionalIncome">
+        <p class="buyTabs" >Crypto Miner {{cryptoMiner.amountOf}} <br> {{cryptoMiner.pricePer | number}} </p>
+    </button>
+
+    <button [hidden]="cryptoMiner.amountOf < 1" [disabled]="factory.pricePer > vaartus" (click)="buyAutoInComeAmount(factory)" class="additionalIncome">
+        <p class="buyTabs" >Factory {{factory.amountOf}} <br> {{factory.pricePer | number}} </p>
+    </button>
+
+    <button [hidden]="factory.amountOf < 1" [disabled]="shop.pricePer > vaartus" (click)="buyAutoInComeAmount(shop)" class="additionalIncome">
+        <p class="buyTabs" >Shop {{shop.amountOf}} <br> {{shop.pricePer | number}} </p>
+    </button>
+
+    <button [hidden]="shop.amountOf < 1" [disabled]="marketing.pricePer > vaartus" (click)="buyAutoInComeAmount(marketing)" class="additionalIncome">
+        <p class="buyTabs" >Marketing {{marketing.amountOf}} <br> {{marketing.pricePer | number}} </p>
+    </button>
+
+    <button [hidden]="marketing.amountOf < 1" [disabled]="influensers.pricePer > vaartus" (click)="buyAutoInComeAmount(influensers)" class="additionalIncome">
+        <p class="buyTabs" >Influencers {{influensers.amountOf}} <br> {{influensers.pricePer | number}} </p>
+    </button>
+
+    <button [hidden]="influensers.amountOf < 1" [disabled]="mafia.pricePer > vaartus" (click)="buyAutoInComeAmount(mafia)" class="additionalIncome">
+        <p class="buyTabs" >Mafia {{mafia.amountOf}} <br> {{mafia.pricePer | number}} </p>
+    </button>
+
+    <button [hidden]="mafia.amountOf < 1" [disabled]="government.pricePer > vaartus" (click)="buyAutoInComeAmount(government)" class="additionalIncome">
+        <p class="buyTabs" >Goverment {{government.amountOf}} <br> {{government.pricePer | number}} </p>
+    </button>
+
+    <button [hidden]="government.amountOf < 1" [disabled]="spaceExploration.pricePer > vaartus" (click)="buyAutoInComeAmount(spaceExploration)" class="additionalIncome">
+        <p class="buyTabs" >Space Exploration {{spaceExploration.amountOf}} <br> {{spaceExploration.pricePer | number}} </p>
+    </button>
+
+    <button [hidden]="spaceExploration.amountOf < 1" [disabled]="aliens.pricePer > vaartus" (click)="buyAutoInComeAmount(aliens)" class="additionalIncome">
+        <p class="buyTabs" >Aliens {{aliens.amountOf}} <br> {{aliens.pricePer | number}} </p>
+    </button>
+</div>
+</body>
+
+<body  id="upgradesBody">  <!--  Power Upgrades for AutoIncome  -->
+    <div  id="upgradesRightDivider"></div>
+    <div [hidden]="autoClickerSetting.amountOf < 1">
+    
+    <button (click)="addPower(cryptoMiner)" [disabled]="cryptoMiner.pricePerPower > vaartus" class="additionalIncome" [style.opacity.%]="powerUpgradeOpacity(cryptoMiner)">
+        <p class="upgradesTabs" >Crypto Miner {{cryptoMiner.powerPer * 2}}x</p>
+    </button>
+    <button [hidden]="cryptoMiner.amountOf < 1" (click)="addPower(factory)" [disabled]="factory.pricePerPower > vaartus" class="additionalIncome" [style.opacity.%]="powerUpgradeOpacity(factory)">
+        <p class="upgradesTabs" >Factory Size {{factory.powerPer * 2}}x</p>
+    </button>
+    <button [hidden]="factory.amountOf < 1" (click)="addPower(shop)" [disabled]="shop.pricePerPower > vaartus" class="additionalIncome" [style.opacity.%]="powerUpgradeOpacity(shop)">
+        <p class="upgradesTabs" >Shop Size {{shop.powerPer * 2}}x</p>
+    </button>
+    <button [hidden]="shop.amountOf < 1" (click)="addPower(marketing)" [disabled]="marketing.pricePerPower > vaartus" class="additionalIncome" [style.opacity.%]="powerUpgradeOpacity(marketing)">
+        <p class="upgradesTabs" >Marketing Team {{marketing.powerPer * 2}}x</p>
+    </button>
+    <button [hidden]="marketing.amountOf < 1" (click)="addPower(influensers)" [disabled]="influensers.pricePerPower > vaartus" class="additionalIncome" [style.opacity.%]="powerUpgradeOpacity(influensers)">
+        <p class="upgradesTabs" >Influencer Popularity {{influensers.powerPer * 2}}x</p>
+    </button>
+    <button [hidden]="influensers.amountOf < 1" (click)="addPower(mafia)" [disabled]="mafia.pricePerPower > vaartus" class="additionalIncome" [style.opacity.%]="powerUpgradeOpacity(mafia)">
+        <p class="upgradesTabs" >Mafia Power {{mafia.powerPer * 2}}x</p>
+    </button>
+    <button [hidden]="mafia.amountOf < 1" (click)="addPower(government)" [disabled]="government.pricePerPower > vaartus" class="additionalIncome" [style.opacity.%]="powerUpgradeOpacity(government)">
+        <p class="upgradesTabs" >Goverment Power {{government.powerPer * 2}}x</p>
+    </button>
+    <button [hidden]="government.amountOf < 1" (click)="addPower(spaceExploration)" [disabled]="spaceExploration.pricePerPower > vaartus" class="additionalIncome" [style.opacity.%]="powerUpgradeOpacity(spaceExploration)">
+        <p class="upgradesTabs" >Space Exploration Funding {{spaceExploration.powerPer * 2}}x</p>
+    </button>
+    <button [hidden]="spaceExploration.amountOf < 1" (click)="addPower(aliens)" [disabled]="aliens.pricePerPower > vaartus" class="additionalIncome" [style.opacity.%]="powerUpgradeOpacity(aliens)">
+        <p class="upgradesTabs" >Hire Double Aliens {{aliens.powerPer * 2}}x</p>
+    </button>
+</div>
+</body>
+
+
+<body class="jumpersBody">
+    <div class="removePaddingAndBorder" *ngFor="let tempjumper of jumpers">
+        <img
+            class="jumper"
+            [src]="tempjumper.src"
+            [style.left.%]="tempjumper.left"
+            [style.bottom.%]="tempjumper.bottom">
+        <img
+            class="jumperButton"
+            [src]="tempjumper.btnSrc"
+            [style.left.%]="tempjumper.btnLeft"
+            [style.bottom.%]="tempjumper.btnBottom">
+    </div>
+    <button class="buyAutoClickers" [disabled]="vaartus < autoClickerSetting.pricePer" (click)="buyAutoInComeAmount(autoClickerSetting)" >Jumper {{autoClickerSetting.amountOf}} <br> {{autoClickerSetting.pricePer | number}}</button>
+    <button class="buyJumperPower2x" [disabled]="vaartus < autoClickerSetting.pricePerPower" (click)="addPower(autoClickerSetting)" [style.opacity.%]="powerUpgradeOpacity(autoClickerSetting)" >Double Jumper Power <br> {{autoClickerSetting.pricePerPower | number}} </button>
+    <div class="jumpersTopDivider"></div>
+</body>
+
+
+<body class="bottomAnimationBody">
+<div class="dividerTop"></div>
+<div class="dividerBottom">
+<div>
+    <img 
+    class="auto"
+    [src]="carPicture"
+    [style.left.%]="carSpeed"
+    [style.transform]="carDirection"
+    [style.padding.%]="0"
+    [style.border.%]="0">
+    
+</div>
+
+
+
+<div [hidden]="pealelaadijad" class="kõnnibbaasi" [style.left.vh]="konnibbaasi"></div>
+<div [hidden]="pealelaadijad" class="kõnnibkastiga" [style.left.vh]="konnibkastika"></div>
+<div class="droneoperator" [style.left.vh]="droneOperatorLeft" [hidden]="!droneoperator"></div>
+<div [hidden]="!droneFly" class="dronefly" [style.left.%]="droneLeft" [style.bottom.%]="droneBottom" (click)="droneCrashed()"></div>
+<div [hidden]="!droneCrash" class="droneboom" [style.left.%]="droneLeft" [style.bottom.%]="droneBottom" ></div>
+<div>{{attackersPreparing}}</div>
+<div>
+    <div *ngFor="let image of attackersPreparing" >
+      <img 
+        id="fighter"
+        [src]="image.src"
+        [style.width.vh]="image.width"
+        [style.height.vh]="image.height"
+        [style.bottom.%]="image.bottom"
+        [style.left.vh]="image.left"
+        [style.z-index]="image.zindex"
+        [hidden]="image.hidden">
+    </div>
+  </div>
+
+  
+
+  <img class="camp" src="camp.png" alt="">
+  <div class="raidStatistics" >
+    <h6 class="raidLeftStatisticsH5" >Raid Statistics:</h6>
+    <br>
+    <div class="row">
+        <p class="leftSideRaidStats">
+            Won: {{successfulRobbings | number}} <br>
+            Lost: {{failedRobbings | number}} <br>
+            Total spent: {{totalSpentOnRaids | number}} <br>
+            Total winnings: {{totalWonWithRaids | number}}
+        </p>
+    </div>
+
+    <h6 class="raidRightStatisticsH5" >Previous raid stats:</h6>
+    <br>
+    <div class="row">
+        <p class="rightSideRaidStats">
+            Last raid was: {{previousRaid | number}} <br>
+            Our attack: {{ourAttack | number}} <br>
+            Enemys Defence: {{enemysDefence | number}} <br>
+            Prize for winning: {{robbingPrize | number}}
+        </p>
+    </div>
+
+  </div>
+  <img class="tee" src="tee.png" alt="">
+  <img class="tee2" src="tee.png" alt="">
+  <img class="rivalhouse" src="rivalhouse.png" alt="">
+
+
+</div>
+<div [hidden]="autoClickerSetting.amountOfAutoClickers < 1">
+<div class="willingToSpendOnRaid">
+    <p id="spendingOnRaid">Spending on raid : {{willingToPayForRobbersEquipment | number}}</p> 
+</div>
+<button [hidden]="isRaiding" class="raidStartButton" (click)="raidprep()">Start raid</button>
+<input [hidden]="isRaiding" [(ngModel)]="willingToPayForRobbersEquipment" min="0" max={{vaartus}} class="range__input" id="" type="range">
+</div>
+</body>
+
+<body id="statisticsBody">
+    <div id="statisticsRightDivider"></div>
+    <h2 id="statisticsHeaderText">Statistics</h2>
+    <br>
+    <div id="statisticsText">
+        <p>Gain per sec : {{gainPerSec | number}}</p>
+        <p>Player clicks : {{totalPlayerClicks| number}}</p>
+        <p>Total earnings : <br> <br> <br> {{totalVaartus | number}}</p>
+        <p [hidden]="timeFirsts.timeUntilFirstTotal1K == 0">Time played til total 1K : <br> <br> <br> {{timeAlign(timeFirsts.timeUntilFirstTotal1K)}}</p>
+        <p [hidden]="timeFirsts.timeUntilFirstTotal10K == 0">Time played til total 10K : <br> <br> <br> {{timeAlign(timeFirsts.timeUntilFirstTotal10K)}}</p>
+        <p [hidden]="timeFirsts.timeUntilFirstTotal100K == 0">Time played til total 100K : <br> <br> <br> {{timeAlign(timeFirsts.timeUntilFirstTotal100K)}}</p>
+        <p [hidden]="timeFirsts.timeUntilFirstTotal1M == 0">Time played til total 1M : <br> <br> <br> {{timeAlign(timeFirsts.timeUntilFirstTotal1M)}}</p>
+        <p [hidden]="timeFirsts.timeUntilFirstTotal10M == 0">Time played til total 10M : <br> <br> <br> {{timeAlign(timeFirsts.timeUntilFirstTotal10M)}}</p>
+        <p [hidden]="timeFirsts.timeUntilFirstTotal100M == 0">Time played til total 100M : <br> <br> <br> {{timeAlign(timeFirsts.timeUntilFirstTotal100M)}}</p>
+        <p [hidden]="timeFirsts.timeUntilFirstTotal1B == 0">Time played til total 1B : <br> <br> <br> {{timeAlign(timeFirsts.timeUntilFirstTotal1B)}}</p>
+        <p [hidden]="timeFirsts.timeUntilFirstTotal10B == 0">Time played til total 10B : <br> <br> <br> {{timeAlign(timeFirsts.timeUntilFirstTotal10B)}}</p>
+        <p [hidden]="timeFirsts.timeUntilFirstTotal100B == 0">Time played til total 100B : <br> <br> <br> {{timeAlign(timeFirsts.timeUntilFirstTotal100B)}}</p>
+        <p [hidden]="timeFirsts.timeUntilFirstTotal1T == 0">Time played til total 1T : <br> <br> <br> {{timeAlign(timeFirsts.timeUntilFirstTotal1T)}}</p>
+    </div>
+
+</body>
+
+<body id="underConstruction">
+
+</body>
+
+<body [hidden]="!saveOrLoadWindow" id="saveOrLoadBody">
+    <p id="saveOrLoadText" >use "Name" and "SaveID" as <br> something you will remember <br> and unique.</p>
+    <form id="saveOrLoadForm" (ngSubmit)="toSaveOrToLoad(addForm)" #addForm="ngForm">
+        <label>Name</label> <br>
+        <input ngModel name="name" type="text"> <br>
+        <label>SaveID</label> <br>
+        <input ngModel name="saveId" type="text"> <br>
+          <button id="saveButton" (click)="toSaveBoolean()" type="submit" class="btn btn-primary">Sisesta</button>
+          <button id="loadButton" (click)="toLoadBoolean()" type="submit" class="btn btn-danger">Load</button>
+      </form>
+      <button id="closeSaveOrLoadWindow" (click)="saveOrLoadWindow = false"></button>
+</body>
+
+<style>
+
+#saveLocal {
+    background-image: url(saveOrLoadButtonBackground.png);
+    background-size: 1%;
+    background-position: 0% 20%;
+    width: 20%;
+    height: 6.8%;
+    text-align: center;
+    line-height: 0%;
+    color: white;
+}
+
+
+#loadLocal {
+    background-image: url(saveOrLoadButtonBackground.png);
+    background-size: 1%;
+    background-position: 0% 20%;
+    position: absolute;
+    width: 20%;
+    height: 6.8%;
+    text-align: center;
+    line-height: 5%;
+    color: white;
+    right: 0%;
+}
+
+#saveOrLoadText {
+    position: absolute;
+    left: 8%;
+    top: 12%;
+}
+
+#closeSaveOrLoadWindow {
+    background-image: url(closeSaveOrLoadWindow.png);
+    background-size: cover;
+    position: absolute;
+    right: 0%;
+    width: 13%;
+    height: 10%;
+    border: none;
+}
+
+#loadButton {
+    position: absolute;
+    left: 70%;
+    top: 130%;
+}
+
+#saveButton {
+    position: absolute;
+    left: 0%;
+    top: 130%;
+}
+
+#saveOrLoadForm {
+    position: absolute;
+    left: 16%;
+    top:  40%;
+}
+
+#saveOrLoadBody {
+    background-image: url(saveOrLoadBodyBackground.png);
+    position: absolute;
+    height: 40%;
+    width: 15%;
+    top: 20%;
+    left: 42%;
+    z-index: 5;
+    border-radius: 10%;
+    color: white;
+    border: white;
+    border-width: 5vh;
+}
+
+#saveOrLoadBackground {
+    background-image: url(saveOrLoadButtonBackground.png);
+    background-size: cover;
+    width: 20%;
+    height: 7%;
+    text-align: center;
+    line-height: 130%;
+    color: white;
+}
+
+#underConstruction {
+    background-image: url(underConstruction.png);
+    background-size: 100% 100%;
+    position: absolute;
+    left: 61%;
+    top: 0%;
+    width: 39%;
+    height: 67%;
+
+    
+}
+
+#ballChannelVertical {
+    background-image: url(ballChannelVertical.png);
+    background-size: 100% 100%;
+    position: absolute;
+    width: 12%;
+    height: 80%;
+    bottom: 7%;
+}
+
+#ballChannelHorizontal {
+    background-image: url(ballChannelHorizontal.png);
+    background-size: 100% 100%;
+    position: absolute;
+    width: 94%;
+    height: 7%;
+    bottom: 0%;
+}
+
+#manualPowerBar {
+    background-image: url(manualPowerBar.png);
+    background-size: contain;
+    position: absolute;
+    left: 14%;
+    width: 73%;
+    height: 50%;
+    bottom: 0%;
+}
+
+#manualPowerUpgradeBackground {
+    background-image: url(manualPowerUpgradeBackground.png);
+    background-size: contain;
+    position: absolute;
+    right: 0%;
+    width: 6%;
+    height: 79%;
+    bottom: 0%;
+}
+
+.ball:hover {
+    cursor: pointer;
+}
+
+.ball {
+    position: absolute;
+    z-index: 1;
+}
+
+#middleCurrencyBottomDivider {
+    background-image: url(divider.png);
+    position: absolute;
+    background-size: cover;
+    height: 1.9vh;
+    width: 100%;
+    bottom: 0%;
+}
+
+#middleCurrencyTopDivider {
+    background-image: url(divider.png);
+    position: absolute;
+    background-size: cover;
+    height: 1.9vh;
+    width: 100%;
+}
+
+#currencyBody {
+    background-image: url(currencyBackground2.png);
+    background-size: 40vh 6vh;
+    background-position: 0vh 1.8vh;
+    position: absolute;
+    top: 7%;
+    width: 100%;
+    height: 14%;
+    z-index: 2;
+}
+
+.currency {
+    background-size: cover;
+    color: black;
+    position: absolute;
+    top: 2.1vh;
+    left: 4vh;
+    width: 32vh;
+    height: 5vh;
+    font-size: 2.2vh;
+    font-weight: 600;
+    padding-top: 2.5%;
+    text-align: center;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+.center {
+    text-align: center;
+}
+
+.getCurrency:hover {
+    height: 22vh;
+    width: 22vh;
+    top: 29vh;
+    left: 9vh;
+
+}
+
+.getCurrency {
+    background-color: transparent; /* Make background transparent */
+    background-image: url(print2.png); /* Your image */
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    position: absolute;
+    top: 30vh;
+    left: 10vh;
+    height: 20vh;
+    width: 20vh;
+    border: none;
+    outline: none;
+    cursor: pointer;
+}
+
+#middleRightDivider {
+    background-image: url(dividerVertical.png);
+    background-size: cover;
+    position: absolute;
+    z-index: 2;
+    width: 4.82%;
+    height: 100%;
+    right: -4.81%;
+}
+
+#middleBody {
+    background-image: url(jumpersbackground.png);
+    position: absolute;
+    left: 40%;
+    width: 20%;
+    height: 67%;
+}
+
+#statisticsText {
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    padding-left: 1%;
+    font-size: 1.8vh;
+    line-height: 40%;
+}
+
+#statisticsHeaderText {
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    text-align: center;
+}
+
+#statisticsRightDivider {
+    background-image: url(dividerVertical.png);
+    background-size: cover;
+    position: absolute;
+    z-index: 2;
+    width: 7.6%;
+    height: 100%;
+    right: 0%;
+}
+
+#statisticsBody {
+    background-image: url(jumpersbackground.png);
+    position: absolute;
+    color: white;
+    width: 13.9%;
+    height: 67%;
+    top: 0%;
+    left: 26.1%;
+}
+
+#spendingOnRaid {
+    height: 15%;
+    text-align: left;
+    font-size:medium;
+    font-weight: 500;
+    line-height: 190%;
+}
+
+.upgradesTabs {
+    line-height: 2.5vh;
+    font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-weight: 500;
+    font-size:2.2vh;
+    height: 3vh;
+}
+
+#upgradesRightDivider {
+    background-image: url(dividerVertical.png);
+    background-size: cover;
+    position: absolute;
+    z-index: 2;
+    width: 8%;
+    height: 100%;
+    right: 0%;
+}
+
+#upgradesBody {
+    background-image: url(jumpersbackground.png);
+    position: absolute;
+    width: 13.1%;
+    height: 67%;
+    top: 0%;
+    left: 13.06%;
+    z-index: 1;
+}
+
+.buyTabs {
+    text-align: center;
+    line-height: 130%;
+    font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-weight: 500;
+    font-size:2.2vh;
+    position: relative;
+    height: 4vh;
+}
+
+.additionalIncome {
+    background-image: url(buttonBuildingBackground.png);
+    background-size: cover;
+    height: 7.43vh;
+    width: 24vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.raidLeftStatisticsH5 {
+    position: absolute;
+    top: 5%;
+    left: 3%;
+    z-index: 5;
+}
+
+.raidRightStatisticsH5 {
+    position: absolute;
+    top: 5%;
+    left: 47%;
+    z-index: 5;
+}
+
+.leftSideRaidStats {
+    background-color: transparent;
+    position: absolute;
+    left: 1%;
+    top: 25%;
+    line-height: 140%;
+    font-size: small;
+    z-index: 5;
+}
+
+.rightSideRaidStats {
+    background-color: transparent;
+    position: absolute;
+    left: 45%;
+    top: 25%;
+    line-height: 140%;
+    font-size: small;
+    z-index: 5;
+}
+
+.raidStatistics {
+    display: none;
+    background-image: url(textBackground.png);
+    background-size: cover;
+    position: absolute;
+    left: 7%;
+    bottom: 350%;
+    width: 21.6%;
+    height: 750%;
+    border-radius: 5px;
+    z-index: 1000;
+}
+
+.raidStartButton {
+    background-image: url(startRaidButton.png);
+    background-size: cover;
+    position: absolute;
+    width: 5.4%;
+    height: 16.2%;
+    top: 20%;
+    font-size: medium;
+    font-weight: 500;
+    text-align: center;
+    line-height: 100%;
+    border: none;
+    border-radius: 2px;
+    z-index: 1;
+}
+
+
+
+.willingToSpendOnRaid {
+    background-image: url(biggerSliderSlashWillingToSpendOnRaidBackground.png);
+    background-size: contain;
+    position: absolute;
+    width: 100%;
+    height: 13%;
+    bottom: 80%;
+}
+
+
+
+.range__input{
+    appearance: none;
+    width: 77.7%;
+    height: 3%;
+    position: absolute;
+    bottom: 85%;
+    left: 22%;
+    background-image: url(sliderBackground.png);
+    background-size: contain;
+    border-radius: 3px;
+    /* opacity: 0; */
+}
+
+.range__input::-webkit-slider-thumb{
+    background-image: url(slidingbutton.png);
+    background-size: cover;
+    appearance: none;
+    width: 2.5vh;
+    height: 2.5vh;
+}
+
+.range__input::-webkit-slider-thumb:hover{
+    cursor: pointer;
+}
+
+.background {
+    background-image: url(taust.png);
+    background-size: 10%;
+}
+
+.raidSlider {
+    width: 80%;
+    height: 5%;
+}
+
+.camp {
+    position: absolute;
+    background-size: cover;
+    bottom: 100%;
+    width: 6.5%;
+}
+
+.camp:hover + .raidStatistics{
+    display: block;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.tee {
+    position: absolute;
+    background-size: cover;
+    bottom: 100%;
+    left: 6.5%;
+    width: 33%;
+}
+
+
+.tee2 {
+    position: absolute;
+    background-size: cover;
+    bottom: 100%;
+    left: 35%;
+    width: 33%
+}
+.rivalhouse {
+    position: absolute;
+    background-size: cover;
+    bottom: 100%;
+    right: 0%;
+    z-index: 160;
+    width: 33%
+}
+
+.auto {
+    position: absolute;
+    background-size: contain;
+    z-index: 2;
+    bottom: 160%;
+    height: 450%;
+    width: 5.5%;
+    left: 80%;
+}
+
+.kõnnibbaasi {
+    background-image: url(kõnnibbaasi2.png);
+    position: absolute;
+    background-size: 100%;
+    z-index: 1;
+    bottom: 150%;
+    height: 5.5vh;
+    width: 5.5vh;
+    left: 7vh;
+}
+
+.kõnnibkastiga {
+    background-image: url(kõnnibkastiga2.png);
+    position: absolute;
+    background-size: contain;
+    background-size: 100%;
+    z-index: 1;
+    bottom: 150%;
+    height: 5.5vh;
+    width: 5.5vh;
+    left: 7vh;
+}
+
+.droneoperator {
+    background-image: url(droneholder.png);
+    position: absolute;
+    background-size: 100%;
+    z-index: 161;
+    bottom: 150%;
+    height: 5vh;
+    width: 5vh;
+    left: 120%;
+    transform: none;
+}
+
+.dronefly {
+    background-image: url(drone.png);
+    position: absolute;
+    background-size: 100%;
+    z-index: 161;
+    bottom: 170%;
+    height: 5vh;
+    width: 5vh;
+    left: 120%;
+    transform: none;
+}
+
+.dronefly:hover {
+    cursor: pointer;
+}
+
+.droneboom {
+    background-image: url(droneexplo.png);
+    position: absolute;
+    background-size: 100%;
+    z-index: 162;
+    bottom: 170%;
+    height: 5vh;
+    width: 5vh;
+    left: 130%;
+    transform: none;
+}
+
+.container {
+    position: relative; /* Ensure absolute positioning works */
+    width: 100%; /* Set the width of the container */
+    height: 100%; /* Set the height of the container */
+}
+
+#fighter {
+    position: absolute;
+}
+
+.buyAutoClickers {
+    background-image: url(buyjumpersbuttonV2.png);
+    position: absolute;
+    background-size: cover;
+    height: 75%;
+    width:10.1%;
+    left: 0%;
+    bottom: 0%;
+    opacity: 100%;
+    z-index: 1;
+    font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif ;
+    text-align: center;
+    font-size: large;
+    font-weight:500;
+    border: black;
+}
+
+.buyJumperPower2x {
+    background-image: url(buyjumperpower2x.png);
+    position: absolute;
+    background-size: cover;
+    height: 75%;
+    width:10%;
+    right: 0%;
+    bottom: 0%;
+    opacity: 100%;
+    z-index: 1;
+    font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif ;
+    text-align: center;
+    font-size: large;
+    font-weight:500;
+    border: black;
+}
+
+.clickereid {
+    color: white;
+    position: absolute;
+    left: 79%;
+    top: 3.5%;
+}
+
+.manualClickPowerUpgrade {
+    background-color: rgb(59, 115, 212);
+    color: white;
+    position: absolute;
+    left: 42.8%;
+    top: 55%;
+    opacity: 100%;
+}
+
+.robbingSlider {
+    background-color: rgb(16, 56, 16);
+    color: rgb(255, 255, 255);
+    border: 5px solid darkblue;
+    position: absolute;
+    top: 30%;
+    left: 75%;
+    width: 384px;
+    height: 308px;
+    text-align:center;
+
+}
+
+.pealelaadimine {
+    size: 150%;
+}
+
+.dividerBottom {
+    background-image: url(divider.png);
+    background-size: contain;
+    position: absolute;
+    z-index: 1;
+    bottom: 0%;
+    height:8%;
+    width: 100%;
+    left: 0px;
+}
+
+.dividerTop {
+    background-image: url(divider.png);
+    background-size: contain;
+    position: absolute;
+    z-index: 1;
+    top: 0%;
+    height: 8%;
+    width: 100%;
+}
+
+.bottomAnimationBody {
+    background-image: url(bottombodybackground.png);
+    background-size: contain;
+    position: absolute;
+    width: 100%;
+    height: 25%;
+    bottom: 0%;
+    z-index: 1;
+}
+
+.jumpersBody {
+    background-image: url(jumpersbackground.png);
+    position: absolute;
+    width: 100%;
+    height: 8%;
+    bottom: 25%;
+    padding: 0;
+    margin: auto;
+    border: 0;
+    outline: 0;
+}
+
+.jumpersTopDivider {
+    background-image: url(divider.png);
+    background-size: contain;
+    position: absolute;
+    z-index: 1;
+    top: 0%;
+    height: 25%;
+    width: 100%;
+}
+
+
+.jumperButton {
+    position: absolute;
+    z-index: 1;
+    height: 10%;
+    width: 2%;
+}
+
+.jumper {
+    display: block;
+    position: absolute;
+    z-index: 2;
+    height: 70%;
+    width: 2%; 
+    padding: 0;   /* Ensure no padding */
+    margin: 0;    /* Ensure no margin */
+    border: none; /* Ensure no border */
+}
+
+.removePaddingAndBorder {
+    display: block;
+    padding: 0;  /* Ensure no padding */
+    margin: 0;   /* Ensure no margin */
+    border: none; /* Ensure no border */
+}
+
+.topLeftDivider {
+    background-image: url(dividerVertical.png);
+    background-size: cover;
+    position: absolute;
+    z-index: 2;
+    width: 8%;
+    height: 100%;
+    right: 0%;
+}
+
+.topLeftBody {
+    background-image: url(jumpersbackground.png);
+    position: absolute;
+    width: 13.1%;
+    height: 67%;
+    top: 0%;
+}
+
+    
+
+
+</style>
+</body>
